@@ -9,7 +9,8 @@ class Respondent(Base):
     __tablename__ = 'respondent'
 
     id = Column(Integer, primary_key=True, index=True)
-    name = Column(String(100), nullable=False)
+    full_name = Column(String(150), nullable=False)
+    email = Column(String(100), nullable=False, unique=True)
     role = Column(Enum(Role), nullable=False)
     other_role = Column(String(100))
     is_seedling = Column(Boolean, nullable=False)

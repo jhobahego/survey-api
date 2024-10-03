@@ -1,6 +1,6 @@
 from typing import Optional, List
 
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 from enum import Enum as PyEnum
 
 
@@ -25,7 +25,7 @@ class QuestionType(PyEnum):
 
 class RespondentCreate(BaseModel):
     id: int
-    username: str
+
     full_name: str
     role: Optional[Role] = Role.OTHER
     other_role: Optional[str] = None
@@ -35,7 +35,8 @@ class RespondentCreate(BaseModel):
 
 class Respondent(BaseModel):
     id: int
-    name: str
+    full_name: str
+    email: EmailStr
     role: Role
     other_role: str
     is_seedling: bool

@@ -3,21 +3,15 @@ from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 from typing import List
 
-from config.db import get_db, create_tables
+from api.Auth import get_current_user
+from config.db import get_db
 from models import SurveyModels
 from schemas import SurveySchemas
 
 router = APIRouter()
 
-create_tables()
 
-
-@router.get("/")
-async def root():
-    return {"message": "Hello World"}
-
-
-@router.post("/questions/", status_code=201)
+@router.post("/questions/", status_code=201, dependencies=[Depends(get_current_user)])
 def create_question(question: SurveySchemas.QuestionCreate, db: Session = Depends(get_db)):
     try:
         db_question = SurveyModels.Question(text=question.text, type=question.type)
@@ -40,13 +34,13 @@ def create_question(question: SurveySchemas.QuestionCreate, db: Session = Depend
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.get("/questions/", response_model=List[SurveySchemas.Question])
+@router.get("/questions/", response_model=List[SurveySchemas.Question], dependencies=[Depends(get_current_user)])
 def get_questions(skip: int = Query(0, ge=0), limit: int = Query(100, le=100), db: Session = Depends(get_db)):
     questions = db.query(SurveyModels.Question).offset(skip).limit(limit).all()
     return questions
 
 
-@router.get("/questions/{question_id}", response_model=SurveySchemas.Question)
+@router.get("/questions/{question_id}", response_model=SurveySchemas.Question, dependencies=[Depends(get_current_user)])
 def get_question(question_id: int, db: Session = Depends(get_db)):
     db_question = db.query(SurveyModels.Question).filter(SurveyModels.Question.id == question_id).first()
     if db_question is None:
@@ -54,7 +48,7 @@ def get_question(question_id: int, db: Session = Depends(get_db)):
     return db_question
 
 
-@router.get("/questions/{question_id}/options", response_model=List[SurveySchemas.ResponseOption])
+@router.get("/questions/{question_id}/options", response_model=List[SurveySchemas.ResponseOption], dependencies=[Depends(get_current_user)])
 def get_question_options(question_id: int, db: Session = Depends(get_db)):
     options = db.query(SurveyModels.ResponseOption).filter(SurveyModels.ResponseOption.question_id == question_id).all()
     if not options:
@@ -62,8 +56,12 @@ def get_question_options(question_id: int, db: Session = Depends(get_db)):
     return options
 
 
-@router.post("/survey-responses/", response_model=SurveySchemas.SurveyResponse)
-def create_survey_response(survey_response: SurveySchemas.SurveyResponseInput, db: Session = Depends(get_db)):
+@router.post("/survey-responses/", response_model=SurveySchemas.SurveyResponse,
+             dependencies=[Depends(get_current_user)])
+def create_survey_response(
+        survey_response: SurveySchemas.SurveyResponseInput,
+        db: Session = Depends(get_db)
+):
     try:
         db_respondent = db.query(SurveyModels.Respondent).filter(
             SurveyModels.Respondent.id == survey_response.respondent_id
