@@ -23,13 +23,23 @@ class QuestionType(PyEnum):
     FREE_TEXT = "Free text"
 
 
+class RespondentCreate(BaseModel):
+    id: int
+    username: str
+    full_name: str
+    role: Optional[Role] = Role.OTHER
+    other_role: Optional[str] = None
+    is_seedling: bool = False
+    time_in_seedbed: Optional[TimeInSeedbed] = None
+
+
 class Respondent(BaseModel):
     id: int
     name: str
     role: Role
     other_role: str
     is_seedling: bool
-    time_in_seedbed: TimeInSeedbed
+    time_in_seedbed: Optional[TimeInSeedbed]
 
     class Config:
         from_attributes = True
@@ -52,6 +62,20 @@ class QuestionCreate(BaseModel):
     text: str
     type: QuestionType
     options: Optional[List[ResponseOptionCreate]] = []
+
+    class Config:
+        from_attributes = True
+        json_schema_extra = {
+            "example": {
+                "text": "text",
+                "type": "Multiple selection",
+                "options": [
+                    {"text": "A). Rojo"},
+                    {"text": "B). Azul"},
+                    {"text": "C). Verde"}
+                ]
+            }
+        }
 
 
 class ResponseOption(BaseModel):
