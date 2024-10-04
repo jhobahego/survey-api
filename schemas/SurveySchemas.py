@@ -25,7 +25,7 @@ class QuestionType(PyEnum):
 
 class RespondentCreate(BaseModel):
     id: int
-
+    email: str
     full_name: str
     role: Optional[Role] = Role.OTHER
     other_role: Optional[str] = None
