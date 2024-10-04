@@ -12,9 +12,9 @@ class Respondent(Base):
     full_name = Column(String(150), nullable=False)
     email = Column(String(100), nullable=False, unique=True)
     role = Column(Enum(Role), nullable=False)
-    other_role = Column(String(100))
+    other_role = Column(String(100), nullable=True)
     is_seedling = Column(Boolean, nullable=False)
-    time_in_seedbed = Column(Enum(TimeInSeedbed))
+    time_in_seedbed = Column(Enum(TimeInSeedbed), nullable=True)
 
     responses = relationship("SurveyResponse", back_populates="respondent")
 
