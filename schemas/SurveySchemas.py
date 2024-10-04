@@ -25,7 +25,7 @@ class QuestionType(PyEnum):
 
 class RespondentCreate(BaseModel):
     id: int
-    email: str
+    email: EmailStr
     full_name: str
     role: Optional[Role] = Role.OTHER
     other_role: Optional[str] = None
@@ -38,7 +38,7 @@ class Respondent(BaseModel):
     full_name: str
     email: EmailStr
     role: Role
-    other_role: str
+    other_role: Optional[str]
     is_seedling: bool
     time_in_seedbed: Optional[TimeInSeedbed]
 
