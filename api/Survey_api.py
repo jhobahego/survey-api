@@ -4,6 +4,7 @@ from sqlalchemy.exc import IntegrityError
 from typing import List
 
 from api.Auth import get_current_user
+from api.Respondent_api import check_admin
 from config.db import get_db
 from models import SurveyModels
 from schemas import SurveySchemas
@@ -11,7 +12,7 @@ from schemas import SurveySchemas
 router = APIRouter()
 
 
-@router.post("/questions/", status_code=201, dependencies=[Depends(get_current_user)])
+@router.post("/questions/", status_code=201, dependencies=[Depends(check_admin)])
 def create_question(question: SurveySchemas.QuestionCreate, db: Session = Depends(get_db)):
     try:
         db_question = SurveyModels.Question(text=question.text, type=question.type)
