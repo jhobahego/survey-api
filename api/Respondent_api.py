@@ -43,6 +43,7 @@ def create_respondent(respondent: SurveySchemas.RespondentCreate, db: Session = 
         db.rollback()
         raise HTTPException(status_code=400, detail="Username already exists")
     except HTTPException as e:
+        db.rollback()
         raise e
     except Exception as e:
         db.rollback()
