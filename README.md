@@ -5,6 +5,7 @@ Este proyecto es una API para gestionar encuestas. A continuación, se detallan 
 ## Requisitos
 
 - Python 3.8 o superior
+- Base de datos (PostgreSQL, MySQL)
 
 ## Instalación
 
